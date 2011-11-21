@@ -9,10 +9,15 @@ For more information about what's supported, and how to install this [check the 
 This plugin has only been tested on Mac OSX.
 It assumes a ant build file in [project path]build/build.xml
 
+
+### Screenshots
+![Select from Command Palette](http://cloud.github.com/downloads/SidLeeAmsterdam/AntTarget/SelectFromCommandPalette.png)
+![Run target from list of tasks available](http://cloud.github.com/downloads/SidLeeAmsterdam/AntTarget/RunAntTaskFromList.png)
+
 ### Install
 
 Please [check the wiki](https://github.com/SidLeeAmsterdam/AntTarget/wiki) for more information on this.
 
-#### Package Control
+### Package Control
 
 This plugin is currently in alpha and we are aiming for package control once the code is more portable.
