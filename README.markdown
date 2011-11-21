@@ -11,8 +11,8 @@ It assumes a ant build file in [project path]build/build.xml
 
 
 ### Screenshots
-![Select from Command Palette](http://cloud.github.com/downloads/SidLeeAmsterdam/AntTarget/SelectFromCommandPalette.png)
-![Run target from list of tasks available](http://cloud.github.com/downloads/SidLeeAmsterdam/AntTarget/RunAntTaskFromList.png)
+![Select from Command Palette](https://github.com/SidLeeAmsterdam/AntTarget/raw/master/screenshots/SelectFromCommandPalette.png)
+![Run target from list of tasks available](https://github.com/SidLeeAmsterdam/AntTarget/raw/master/screenshots/RunAntTaskFromList.png)
 
 ### Install
 
