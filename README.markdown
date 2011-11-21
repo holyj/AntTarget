@@ -2,7 +2,7 @@
 
 Ant integration: Just a little bit nicer.
 
-For more information about what's supported, and how to install this check the wiki.
+For more information about what's supported, and how to install this [check the wiki](https://github.com/SidLeeAmsterdam/AntTarget/wiki).
 
 ## Supported
 
@@ -11,7 +11,7 @@ It assumes a ant build file in [project path]build/build.xml
 
 ### Install
 
-Please check the wiki.
+Please [check the wiki](https://github.com/SidLeeAmsterdam/AntTarget/wiki) for more information on this.
 
 #### Package Control
 
