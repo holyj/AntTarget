@@ -1,0 +1,22 @@
+[
+    {
+        "id": "tools",
+        "children":
+        [
+            {
+                "caption": "Ant",
+                "children":
+                [
+                    {
+                        "caption": "This file",
+                        "children":
+                        [
+                            { "caption": "Build", "command": "ant_show_targets" }
+                        ]
+                    }
+
+                ]
+            }
+        ]
+    }
+]
