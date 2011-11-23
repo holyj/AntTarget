@@ -19,6 +19,12 @@ class CommandBase():
     def generic_done(self, result):
         print result
 
+    def generic_cancel(self):
+        print 'cancel'
+
+    def generic_change(self, result):
+        print result
+
 
 class WindowCommandBase(CommandBase):
     def panel(self, output, **kwargs):
@@ -36,61 +42,44 @@ class WindowCommandBase(CommandBase):
     def get_window(self):
         return self.window
 
-
-class AntTargetCommand(sublime_plugin.TextCommand):
-
-    def __init__(self, view):
-        self.view = view
-        self.window = self.view.window()
-        self.buildFilePath = 'build/build.xml'
-        self.projectPath = self.window.folders()[0]
-
-    def run(self, edit):
-        self.printProjectInfo()
-        self.parseBuildFile(self.projectPath + '/' + self.buildFilePath)
-
-    def printProjectInfo(self):
-        print '----------'
-        print 'buildFilePath: ' + self.buildFilePath
-        print 'projectPath: ' + self.projectPath
-        print '--'
-
-    def parseBuildFile(self, filePath):
-        dom = minidom.parse(urllib.urlopen(filePath))
-        targets = dom.getElementsByTagName("target")
-        #print 'Found %i targets:' % targets.length
-        #call(["ant", "default"])
-        buildCommand = "ant -buildfile %s Default" % filePath
-        for index in range(len(targets)):
-            print '%i) Target: %s' % (index, targets[index].attributes['name'].value)
-
-        print ''
-        thread = ExternalCommandThread(buildCommand, self.generic_done)
-        thread.start()
-
-    def generic_done(self, result):
-        print result
+    def input_panel(self, *args, **kwargs):
+        self.get_window().show_input_panel(*args, **kwargs)
+        #self.generic_done, self.generic_change, self.generic_cancel)
 
 
 class AntShowTargetsCommand(WindowCommandBase, sublime_plugin.WindowCommand):
 
     def run(self):
-        self.buildFilePath = 'build/build.xml'
+        s = sublime.load_settings("Ant.sublime-settings")
+        self.buildFilePath = s.get('build_file_path')
         self.projectPath = self.window.folders()[0]
         self.results = []
-        dom = minidom.parse(urllib.urlopen(self.projectPath + '/' + self.buildFilePath))
-        targets = dom.getElementsByTagName("target")
-        for index in range(len(targets)):
-            #target = '%i Target: %s' % (index, targets[index].attributes['name'].value)
-            target = targets[index].attributes['name'].value
-            description = targets[index].getAttribute('description') or '[no description]'
-            self.results.insert(index, [target, description])
+        try:
+            dom = minidom.parse(urllib.urlopen(self.projectPath + '/' + self.buildFilePath))
+        except IOError:
+            print 'cannot open', self.projectPath + '/' + self.buildFilePath
+            self.input_panel('cannot open', self.buildFilePath, self.input_done, self.input_change, self.generic_cancel)
+        else:
+            targets = dom.getElementsByTagName("target")
+            for index in range(len(targets)):
+                #target = '%i Target: %s' % (index, targets[index].attributes['name'].value)
+                target = targets[index].attributes['name'].value
+                description = targets[index].getAttribute('description') or '[no description]'
+                self.results.insert(index, [target, description])
 
-        self.quick_panel(self.results, self.panel_done)
-        sublime.status_message('Listed targets')
+            self.quick_panel(self.results, self.panel_done)
+            sublime.status_message('Listed targets')
 
-    def generic_done(self, result):
-        print result
+    def input_change(self, result):
+        print 'CHANGE %s' % result
+
+    def input_done(self, result):
+        print 'DONE %s' % result
+        s = sublime.load_settings("Ant.sublime-settings")
+        s.set('build_file_path', result)
+        sublime.save_settings("Ant.sublime-settings")
+        self.run()
+        # store in settings and execute command again
 
     def panel_done(self, picked):
         if 0 > picked < len(self.results):

@@ -1,4 +1,5 @@
 {
 	// save before running commands
-	"save_first": true
+	"save_first": true,
+	"build_file_path":"build/build.xml"
 }
