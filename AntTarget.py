@@ -54,10 +54,14 @@ class AntShowTargetsCommand(WindowCommandBase, sublime_plugin.WindowCommand):
         self.buildFilePath = s.get('build_file_path')
         self.projectPath = self.window.folders()[0]
         self.results = []
+        self.parseAntFile(self.projectPath + '/' + self.buildFilePath)        
+
+    
+    def parseAntFile(self, path):
         try:
-            dom = minidom.parse(urllib.urlopen(self.projectPath + '/' + self.buildFilePath))
+            dom = minidom.parse(urllib.urlopen(path))
         except IOError:
-            print 'cannot open', self.projectPath + '/' + self.buildFilePath
+            print 'cannot open', path
             self.input_panel('cannot open', self.buildFilePath, self.input_done, self.input_change, self.generic_cancel)
         else:
             targets = dom.getElementsByTagName("target")
@@ -66,6 +70,12 @@ class AntShowTargetsCommand(WindowCommandBase, sublime_plugin.WindowCommand):
                 target = targets[index].attributes['name'].value
                 description = targets[index].getAttribute('description') or '[no description]'
                 self.results.insert(index, [target, description])
+            
+            imports = dom.getElementsByTagName("import")
+            for index2 in range(len(imports)):
+                importPath = imports[index2].attributes['file'].value
+                rparts = path.rpartition("/")                
+                self.parseAntFile(rparts[0] + rparts[1] + importPath)
 
             self.quick_panel(self.results, self.panel_done)
             sublime.status_message('Listed targets')
